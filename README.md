@@ -1,36 +1,149 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TinyLink - URL Shortener
+
+A modern URL shortener application built with Next.js, similar to bit.ly. Create short links, track click statistics, and manage your links with a clean, responsive interface.
+
+## Features
+
+- ✅ Create short links with optional custom codes (6-8 alphanumeric characters)
+- ✅ Automatic code generation if no custom code provided
+- ✅ URL validation before saving
+- ✅ Click tracking and statistics
+- ✅ Dashboard with search and filter functionality
+- ✅ Individual stats page for each link
+- ✅ Delete links functionality
+- ✅ Health check endpoint
+- ✅ Responsive design with Tailwind CSS
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Database**: PostgreSQL (via Sequelize ORM)
+- **Styling**: Tailwind CSS
+- **Language**: TypeScript
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ installed
+- PostgreSQL database (local or cloud service like Neon)
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <your-repo-url>
+cd tinylink
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Edit `.env` and add your database URL:
+```
+DATABASE_URL=postgres://user:password@host:port/dbname
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+```
 
-## Learn More
+4. Run the development server:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## API Endpoints
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Health Check
+- `GET /healthz` - Returns system health status
 
-## Deploy on Vercel
+### Links API
+- `POST /api/links` - Create a new short link
+  - Body: `{ "url": "https://example.com", "code": "optional" }`
+  - Returns 409 if code already exists
+  
+- `GET /api/links` - List all links
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `GET /api/links/:code` - Get stats for a specific link
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `DELETE /api/links/:code` - Delete a link
+
+## Pages & Routes
+
+- `/` - Dashboard (list, add, delete links)
+- `/code/:code` - Stats page for a specific link
+- `/:code` - Redirect to original URL (302 redirect)
+- `/healthz` - Health check endpoint
+
+## Code Validation
+
+- Custom codes must be 6-8 alphanumeric characters: `[A-Za-z0-9]{6,8}`
+- Codes are globally unique across all users
+- URLs must be valid http:// or https:// URLs
+
+## Deployment
+
+### Deploy to Vercel
+
+1. Push your code to GitHub
+2. Import the project in Vercel
+3. Add environment variables:
+   - `DATABASE_URL` - Your PostgreSQL connection string
+   - `NEXT_PUBLIC_BASE_URL` - Your deployed app URL
+4. Deploy!
+
+### Database Setup (Neon)
+
+1. Create a free account at [Neon](https://neon.tech)
+2. Create a new project
+3. Copy the connection string
+4. Add it to your environment variables as `DATABASE_URL`
+
+The database tables will be automatically created on first API call.
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── healthz/
+│   │   │   └── route.ts          # Health check endpoint
+│   │   └── links/
+│   │       ├── route.ts           # GET, POST /api/links
+│   │       └── [code]/
+│   │           └── route.ts       # GET, DELETE /api/links/:code
+│   ├── code/
+│   │   └── [code]/
+│   │       └── page.tsx           # Stats page
+│   ├── [code]/
+│   │   └── route.ts               # Redirect route
+│   ├── lib/
+│   │   ├── db.ts                  # Database connection
+│   │   ├── init.ts                # Database initialization
+│   │   └── utils.ts                # Utility functions
+│   ├── models/
+│   │   └── Link.ts                 # Link model
+│   ├── layout.tsx                  # Root layout
+│   └── page.tsx                    # Dashboard
+```
+
+## Testing
+
+The application follows specific URL conventions for automated testing:
+
+- All endpoints must match the specified paths exactly
+- Health check returns `{ "ok": true, "version": "1.0" }`
+- Redirect returns 302 for existing links, 404 for deleted links
+- Duplicate codes return 409 status
+
+## License
+
+MIT
