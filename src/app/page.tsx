@@ -22,27 +22,43 @@ export default function Dashboard() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [health, setHealth] = useState(false);
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
-  async function fetchLinks() {
+  const fetchLinks = async () => {
     try {
       setFetching(true);
+      setError("");
       const res = await axiosInstance.get("/api/links");
-      setLinks(res?.data || []);
-      setFilteredLinks(res?.data || []);
+      const linksData = res?.data || [];
+      setLinks(linksData);
+      setFilteredLinks(linksData);
     } catch (err) {
       setError("Failed to load links");
     } finally {
       setFetching(false);
     }
-  }
+  };
+
+  const getHealth = async () => {
+    try {
+      const res = await axiosInstance.get("/api/healthz");
+      if (res.status === 200) {
+        setHealth(res.data.ok);
+        console.log(res.data);
+      }
+    } catch (err) {
+      setHealth(false);
+    }
+  };
 
   useEffect(() => {
     fetchLinks();
+    getHealth();
   }, []);
 
-  useEffect(() => {
+  useEffect(() => {  
     if (!searchQuery.trim()) {
       setFilteredLinks(links);
       return;
@@ -57,30 +73,37 @@ export default function Dashboard() {
     setFilteredLinks(filtered);
   }, [searchQuery, links]);
 
-  async function deleteLink(code: string) {
+  const deleteLink = async (code: string) => {
     if (
       !confirm(`Are you sure you want to delete the link with code "${code}"?`)
     )
       return;
 
+    setError("");
+    setSuccess("");
+
     try {
       await axiosInstance.delete(`/api/links/${code}`);
-      await fetchLinks();
       setSuccess("Link deleted successfully!");
+      await fetchLinks();
+      setTimeout(() => setSuccess(""), 3000);
     } catch (err) {
       setError("Failed to delete link");
+      setTimeout(() => setError(""), 3000);
     }
-  }
+  };
 
-  async function copyToClipboard(text: string) {
+  const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
       setSuccess("Copied to clipboard!");
+      setError("");
       setTimeout(() => setSuccess(""), 2000);
     } catch (err) {
       setError("Failed to copy to clipboard");
+      setTimeout(() => setError(""), 2000);
     }
-  }
+  };
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return "Never";
@@ -94,6 +117,24 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">All Links</h1>
           <p className="text-gray-600">Manage and track your shortened URLs</p>
         </div>
+
+        {error && (
+          <div className="mb-4 bg-red-50 border-l-4 border-red-400 text-red-700 px-4 py-3 rounded-lg">
+            <p>{error}</p>
+          </div>
+        )}
+
+        {success && (
+          <div className="mb-4 bg-green-50 border-l-4 border-green-400 text-green-700 px-4 py-3 rounded-lg">
+            <p>{success}</p>
+          </div>
+        )}
+
+        {health && (
+          <div className="mb-4 bg-green-50 border-l-4 border-green-400 text-green-700 px-4 py-3 rounded-lg">
+            <p>Health check passed!</p>
+          </div>
+        )}
 
         <div
           id="links"
@@ -130,7 +171,7 @@ export default function Dashboard() {
             </div>
           ) : filteredLinks?.length === 0 ? (
             <div className="p-12 text-center flex flex-col items-center justify-center">
-              <FaLink className="text-gray-400 size-6 mx-auto mb-4"/>
+              <FaLink className="text-gray-400 size-6 mx-auto mb-4" />
               <p className="text-gray-500 text-lg font-medium">
                 {searchQuery
                   ? "No links match your search."

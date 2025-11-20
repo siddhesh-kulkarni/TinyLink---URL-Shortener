@@ -1,6 +1,6 @@
 "use client";
 
-import react, { useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 import axiosInstance from "@/app/lib/axios";
@@ -12,6 +12,7 @@ export default function CreatePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [codeError, setCodeError] = useState("");
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
@@ -19,9 +20,15 @@ export default function CreatePage() {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setCodeError("");
 
     if (!url.trim()) {
       setError("Please enter a valid URL");
+      return;
+    }
+
+    if (code.trim() && !/^[A-Za-z0-9]{6,8}$/.test(code.trim())) {
+      setCodeError("Custom code must be 6-8 alphanumeric characters");
       return;
     }
 
@@ -91,16 +98,26 @@ export default function CreatePage() {
                   <div className="px-4 py-2 border border-gray-300 rounded-l-lg bg-gray-100 text-gray-600 font-mono text-sm whitespace-nowrap">
                     {baseUrl}/
                   </div>
-                  <input
-                    type="text"
-                    placeholder="mycode"
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-r-lg bg-gray-50 font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#022d94] focus:border-[#022d94]"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    disabled={loading}
-                    pattern="[A-Za-z0-9]{6,8}"
-                    title="6-8 alphanumeric characters"
-                  />
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      placeholder="mycode"
+                      className={`w-full px-4 py-2 border rounded-r-lg bg-gray-50 font-mono text-gray-700 focus:outline-none focus:ring-2 ${
+                        codeError
+                          ? "border-red-300 focus:ring-red-500 focus:border-red-500"
+                          : "border-gray-300 focus:ring-[#022d94] focus:border-[#022d94]"
+                      }`}
+                      value={code}
+                      onChange={(e) => {
+                        setCode(e.target.value);
+                        setCodeError("");
+                      }}
+                      disabled={loading}
+                    />
+                    {codeError && (
+                      <p className="text-red-600 text-xs mt-1">{codeError}</p>
+                    )}
+                  </div>
                 </div>
               </div>
 

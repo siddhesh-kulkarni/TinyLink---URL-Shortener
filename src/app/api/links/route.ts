@@ -15,7 +15,7 @@ export async function GET() {
   try {
     await ensureDB();
     const links = await Link.findAll({
-      order: [["createdAt", "DESC"]],
+      order: [["createdAt", "DESC"]], 
     });
 
     const linksData = links?.map?.((link: any) => link.toJSON());

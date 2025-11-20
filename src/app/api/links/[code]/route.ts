@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Link } from "@/app/models/Link";
 import { initDB } from "@/app/lib/init";
 
-// Initialize database connection
 let dbInitialized = false;
 async function ensureDB() {
   if (!dbInitialized) {
@@ -11,9 +10,6 @@ async function ensureDB() {
   }
 }
 
-/**
- * GET /api/links/:code - Get stats for a specific link
- */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
@@ -37,9 +33,6 @@ export async function GET(
   }
 }
 
-/**
- * DELETE /api/links/:code - Delete a link
- */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
@@ -64,3 +57,4 @@ export async function DELETE(
   }
 }
 
+//links/:[code]

@@ -97,7 +97,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             </div>
           </div>
 
-          {/* Navigation */}
           <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
             {navigation?.map?.((item:any) => {
               const Icon = item?.icon;

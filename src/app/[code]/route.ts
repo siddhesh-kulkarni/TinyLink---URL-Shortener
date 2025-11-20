@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Link } from "@/app/models/Link";
 import { initDB } from "@/app/lib/init";
 
-// Initialize database connection
 let dbInitialized = false;
 async function ensureDB() {
   if (!dbInitialized) {
@@ -11,10 +10,6 @@ async function ensureDB() {
   }
 }
 
-/**
- * GET /:code - Redirect to original URL
- * Returns 302 redirect if link exists, 404 if not
- */
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ code: string }> }
@@ -29,14 +24,12 @@ export async function GET(
       return NextResponse.json({ error: "Link not found" }, { status: 404 });
     }
 
-    // Increment click count and update last clicked time
     const currentClicks = (link.get("clicks") as number) || 0;
     await link.update({
       clicks: currentClicks + 1,
       lastClicked: new Date(),
     });
 
-    // Return 302 redirect
     const url = link.get("url") as string;
     return NextResponse.redirect(url, { status: 302 });
   } catch (error) {
