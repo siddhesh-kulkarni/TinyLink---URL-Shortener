@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "630d4239-65a6-4d2f-8e79-320e266112be",
+		"name": "TinyLinks",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "45592590"
+	},
+	"item": [
+		{
+			"name": "Get Created Links",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/links"
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"code\" : \"Asdf234\",\r\n    \"url\" : \"https://newdomain.com/my-settings-page\",\r\n    \"clicks\" : 0,\r\n    \"lastClicked\" : null\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:3000/api/links"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:3000/api/healthz"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Link",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://localhost:3000/api/links/Csk2014"
+			},
+			"response": []
+		}
+	]
+}
