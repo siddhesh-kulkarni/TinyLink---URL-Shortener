@@ -143,7 +143,3 @@ The application follows specific URL conventions for automated testing:
 - Health check returns `{ "ok": true, "version": "1.0" }`
 - Redirect returns 302 for existing links, 404 for deleted links
 - Duplicate codes return 409 status
-
-## License
-
-MIT
