@@ -32,18 +32,18 @@ A modern URL shortener application built with Next.js, similar to bit.ly. Create
 
 1. Clone the repository:
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/siddhesh-kulkarni/TinyLink---URL-Shortener
 cd tinylink
 ```
 
 2. Install dependencies:
 ```bash
-npm install
+npm install  or yarn install
 ```
 
 3. Set up environment variables:
 ```bash
-cp .env.example .env
+.env
 ```
 
 Edit `.env` and add your database URL:
@@ -143,3 +143,5 @@ The application follows specific URL conventions for automated testing:
 - Health check returns `{ "ok": true, "version": "1.0" }`
 - Redirect returns 302 for existing links, 404 for deleted links
 - Duplicate codes return 409 status
+
+## Code with Joy, Test with Patience, Deploy with Joy
