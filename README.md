@@ -32,7 +32,7 @@ A modern URL shortener application built with Next.js, similar to bit.ly. Create
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/siddhesh-kulkarni/TinyLink---URL-Shortener
+git clone https://github.com/siddhesh-kulkarni/tinylink
 cd tinylink
 ```
 
