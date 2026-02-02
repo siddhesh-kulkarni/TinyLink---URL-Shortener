@@ -21,8 +21,6 @@ A modern URL shortener application built with Next.js, similar to bit.ly. Create
 - **Styling**: Tailwind CSS
 - **Language**: TypeScript
 
-## Getting Started
-
 ### Prerequisites
 
 - Node.js 18+ installed
